@@ -12,7 +12,7 @@ $ bundle install
 $ bundle exec jekyll serve
 ```
 
-and visit (http://localhost:4000)[http://localhost:4000].
+and visit [http://localhost:4000](http://localhost:4000).
 
 ## To Add a Post
 
