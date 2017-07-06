@@ -30,3 +30,15 @@ header li {
 a.website {
   background: none;
 }
+
+// p.post-meta {
+// 	margin: 0;
+// }
+
+section ul.post-list {
+	list-style: none;
+	li h2, li p {
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+}

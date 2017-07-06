@@ -4,3 +4,4 @@ url: "https://pulibrary.github.io"
 permalink: /:year-:month-:day-:title
 github_username: pulibrary
 website_link: "https://library.princeton.edu/"
+excerpt_separator: <!--more-->
