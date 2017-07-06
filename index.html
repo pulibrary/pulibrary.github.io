@@ -5,11 +5,12 @@ layout: default
 
 <h3>Princeton University Library Systems</h3>
 
-<ul>
+<ul class="post-list">
   {% for post in site.posts %}
     <li>
-      <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>:
-      <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+      <p class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</p>
+      {{ post.excerpt }}
+      <p class="post-meta"><a class="post-link" href="{{ post.url | prepend: site.baseurl }}">More...</a></p>
     </li>
   {% endfor %}
 </ul>
