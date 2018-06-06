@@ -9,7 +9,7 @@ layout: default
 
 I generally don't find looking at slides to be a good substitute for watching a talk, and I'd
 rather read a text version than watch a video, so I thought I'd write up a brief summary of my talk
-at [Open Repositories](https://or2018.net/).
+at [Open Repositories](http://or2018.net/).
 
 <!--more-->
 
@@ -19,7 +19,7 @@ at [Open Repositories](https://or2018.net/).
 [Samvera](https://samvera.org/).  It's the core part of the repository stack that handles storing
 metadata and files.  It provides APIs for acessing and navigating relationships between objects.
 If you're familiar with the Samvera stack, it's a replacement for
-[ActiveFedora](https://github.com/samvera/active-fedora/).
+[ActiveFedora](https://github.com/samvera/active_fedora).
 
 One of the key features of Valkyrie is swappable backends — allowing you to use different storage
 options in your application without having to change any of the code.  So while ActiveFedora
@@ -145,8 +145,8 @@ system they depended on.
 In much the same way, ActiveFedora was modeled after ActiveRecord, but it wasn't compatible with
 many community gems because it wasn't actually ActiveRecord.  By contrast, Valkyrie uses more
 community gems, such as [Dry::Types](http://dry-rb.org/gems/dry-types/),
-[Dry::Struct](http://dry-rb.org/gems/dry-struct/), [reform](http://trailblazer.to/gems/reform/)
-and [draper](https://github.com/drapergem/draper), allowing Valkyrie applications to work with a
+[Dry::Struct](http://dry-rb.org/gems/dry-struct/), [Reform](http://trailblazer.to/gems/reform/)
+and [Draper](https://github.com/drapergem/draper), allowing Valkyrie applications to work with a
 wider variety of gems.
 
 One practical impact of this related to hiring (and retaining) developers.  There are many more
