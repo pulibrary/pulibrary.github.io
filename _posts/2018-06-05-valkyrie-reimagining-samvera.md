@@ -8,8 +8,8 @@ layout: default
 **by Esmé Cowles**
 
 I generally don't find looking at slides to be a good substitute for watching a talk, and I'd
-rather read a text version than watch a video, so I thought I'd write up a brief summary of my talk
-at [Open Repositories](http://or2018.net/).
+rather read a text version than watch a video, so I thought I'd write up a text version of my
+talk at [Open Repositories](http://or2018.net/).
 
 <!--more-->
 
