@@ -11,6 +11,7 @@ layout: default
       <p class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</p>
       {{ post.excerpt }}
       <p class="post-meta"><a class="post-link" href="{{ post.url | prepend: site.baseurl }}">More...</a></p>
+      <br/>
     </li>
   {% endfor %}
 </ul>
