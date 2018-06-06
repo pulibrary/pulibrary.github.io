@@ -137,9 +137,17 @@ code migrations as easy as possible, and generally supporting sustainable reposi
 
 ### Lesson from Islandora: don't fight against your platform
 
-A part of the [Islandora CLAW](https://islandora.ca/CLAW) effort is to fully embrace the drupal platform so that Islandora applications can take full advantage of existing Drupal modules.  past versions weren't compatible with most Drupal modules, because they didn't use the Drupal Node system they depended on.
+A part of the [Islandora CLAW](https://islandora.ca/CLAW) effort is to fully embrace the Drupal
+platform so that Islandora applications can take full advantage of existing Drupal modules.  past
+versions weren't compatible with most Drupal modules, because they didn't use the Drupal Node
+system they depended on.
 
-In much the same way, ActiveFedora was modeled after ActiveRecord, but it wasn't compatible with many community gems because it wasn't actually ActiveRecord.  By contrast, Valkyrie uses more community gems, such as [Dry::Types](http://dry-rb.org/gems/dry-types/), [Dry::Struct](http://dry-rb.org/gems/dry-struct/), [reform](http://trailblazer.to/gems/reform/) and [draper](https://github.com/drapergem/draper), allowing Valkyrie applications to work with a wider variety of gems.
+In much the same way, ActiveFedora was modeled after ActiveRecord, but it wasn't compatible with
+many community gems because it wasn't actually ActiveRecord.  By contrast, Valkyrie uses more
+community gems, such as [Dry::Types](http://dry-rb.org/gems/dry-types/),
+[Dry::Struct](http://dry-rb.org/gems/dry-struct/), [reform](http://trailblazer.to/gems/reform/)
+and [draper](https://github.com/drapergem/draper), allowing Valkyrie applications to work with a
+wider variety of gems.
 
 One practical impact of this related to hiring (and retaining) developers.  There are many more
 Rails developers than Samvera developers.  And following the patterns those developers know makes it
