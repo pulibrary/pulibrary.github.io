@@ -47,7 +47,8 @@ We began thinking about ways we might insert new API abstraction layers into the
 we were working on [Curation Concerns](https://github.com/samvera/curation_concerns) (now
 [Hyrax](https://github.com/samvera/hyrax)), and started seeing divergent use cases.  At first, we
 thought that there was an important distinction between institutional repositories and digital
-collections, but we came to see that as a false dichotomy.  We came to see other differences as moreimportant, such as whether you wanted to have a control panel in your application to customize it,
+collections, but we came to see that as a false dichotomy.  We came to see other differences as more
+important, such as whether you wanted to have a control panel in your application to customize it,
 or whether you would rather write code to change the way your application worked.  And we also saw
 metadata complexity, and in particular, the scale and scope of linking between objects, as a key
 point of divergence.  Whether the linking was because of [PCDM](https://pcdm.org/), or modeling
