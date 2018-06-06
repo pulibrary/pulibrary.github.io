@@ -69,7 +69,7 @@ In theory, Fedora and Solr serve very distinct roles in the Samvera framework.  
 architecture diagrams, but in practice, their use is very intertwined.  Because Solr provides query
 functionality that Fedora doesn't, and because Solr is often faster than Fedora, there are many
 places in the code where Solr is used instead of Fedora.  And because there are no clearly-defined
-APIs or abstractions, these calls to solr typically invovle low-level Solr concerns, such as field
+APIs or abstractions, these calls to Solr typically invovle low-level Solr concerns, such as field
 names and query syntax.  Both the core ActiveFedora code and application code do this in many
 places, resulting in complexity that makes it hard to address performance problems, and in fact,
 deters developers from working on ActiveFedora.
@@ -138,7 +138,7 @@ code migrations as easy as possible, and generally supporting sustainable reposi
 ### Lesson from Islandora: don't fight against your platform
 
 A part of the [Islandora CLAW](https://islandora.ca/CLAW) effort is to fully embrace the Drupal
-platform so that Islandora applications can take full advantage of existing Drupal modules.  past
+platform so that Islandora applications can take full advantage of existing Drupal modules.  Past
 versions weren't compatible with most Drupal modules, because they didn't use the Drupal Node
 system they depended on.
 
@@ -160,5 +160,5 @@ Many institutions are adopting Hyrax, and there is a lot of momentum around it. 
 it's important for there to be a place in the Samvera community for building your own application
 from components, instead of using an existing solution bundle.  I don't think a one-size-fits-all
 approach will work well for the Samvera community.  And building reusable components will help us
-take the best advantage of the broader rails ecosystem, and build components that are usable beyond
+take the best advantage of the broader Rails ecosystem, and build components that are usable beyond
 our small community.
