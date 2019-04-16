@@ -36,6 +36,7 @@ We want to store our files in a system which can do the following:
 1. Store binaries as well as serialized metadata for each "object" that's
    stored.
 1. Keep track of checksums for binary and metadata serializations.
+1. Be able to verify files are in-tact using stored checksums.
 1. Allow for re-ingest of an object from the Preservation back-end in the case
    of data loss.
 1. Keep track of historical versions of both metadata and changing binary
