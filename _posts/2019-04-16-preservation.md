@@ -147,6 +147,12 @@ objects in the object root. I'm going to treat that as an implementation detail
 and pretend we're using a file system that can handle an infinite number of
 resources in the same directory.
 
+Also, directories in OCFL aren't really considered to be "directories," as the
+specification is meant to work on any platform. As such, files just happen to
+have slashes in their name. It's expected and normal that if there's an empty
+directory an OCFL client will ignore it or even get rid of it, which simplifies
+required cleanup.
+
 1. Create a base directory named `<book-id>`
 1. Create a file named `0=ocfl_object_1.0` with the appropriate contents.
 1. Create a v1 directory
