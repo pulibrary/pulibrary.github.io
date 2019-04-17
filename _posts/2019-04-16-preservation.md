@@ -11,8 +11,12 @@ Lately we've been working on preservation within
 [Figgy](https://github.com/pulibrary/figgy) and have come up with a strategy we
 think works for us. However, in doing so, we've evaluated a few options and come
 up with some assumptions which could be useful to others.
-
 <!--more-->
+
+This isn't our entire preservation story (there are other issues such as
+replication, management, audit trails, etc), but it compares a few options for
+our back-end storage.
+
 
 ### Object Boundaries
 
@@ -138,7 +142,7 @@ above options.
 
 #### OCFL
 
-Implementation notes for OCFL recommend things such as pair-trees for storing
+Implementation notes for OCFL provides options for things such as pair-trees for storing
 objects in the object root. I'm going to treat that as an implementation detail
 and pretend we're using a file system that can handle an infinite number of
 resources in the same directory.
@@ -173,7 +177,7 @@ resources in the same directory.
    storage until this large change is done. Otherwise, the inventory will be
    corrupted by a race condition, and versions will be unable to be properly
    calculated:
-   1. Preservation starts. Pages start to persist into a bag.
+   1. Preservation starts. Pages start to persist into a directory.
    2. Page gets modified out of band (label changed or page switched)
    3. Page's changes get sent to be preserved.
    4. Page gets preserved as a new version of the bag, updating the
@@ -218,6 +222,8 @@ A small note about GCS - I'm going to call paths "directories", but in GCS it's
 3. Migrating to a different platform is potentially more than a single copy
    operation - but at least GCS validates file integrity as part of the
    platform.
+4. Migrating versions would mean we have to use their API - fortunately it's well
+   documented and battle tested.
 
 ### Delete a Full Book
 
