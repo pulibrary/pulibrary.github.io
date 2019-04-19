@@ -24,7 +24,7 @@ I talk about an "object" a lot below. After much discussion, we decided at
   Princeton that we want a "directory" to consist of a top-level object (like a
   Book) and all its children.
 
-This means a requirement is that I'm able to copy a single directory and get
+This makes it a requirement that I am able to copy a single directory and get
 everything I need to re-ingest that object and display it. External references
 may not come in, but the hierarchy will.
 
@@ -40,13 +40,14 @@ We want to store our files in a system which can do the following:
 1. Store binaries as well as serialized metadata for each "object" that's
    stored.
 1. Keep track of checksums for binary and metadata serializations.
-1. Be able to verify files are in-tact using stored checksums.
+1. Be able to verify files are intact using stored checksums.
 1. Allow for re-ingest of an object from the Preservation back-end in the case
-   of data loss.
+   of data loss in our local repository.
 1. Keep track of historical versions of both metadata and changing binary
    content.
 1. Be able to performantly handle hierarchies for situations where an object may
-   have thousands of members (pages in a book) that need to be preserved all at once.
+   have thousands of members (Pages in a Book) that need to be preserved all at
+   once.
 
 ### Options
 
@@ -55,17 +56,20 @@ This list is not exhaustive, but it's the options we evaluated.
 1. [BagIt](https://tools.ietf.org/html/rfc8493)
    1. Specification which defines a way to package up binary content as well as
       metadata, along with checksums for each of them. Allows for "validation" of
-      a bag, to ensure that it's well-formed (mostly that checksums match and
+      a Bag, to ensure that it's well-formed (mostly that checksums match and
       required metadata exists.)
-   2. We considered packaging these in a ZIP archive as well as not. Since we
-      chose Google Cloud Storage over Amazon Glacier, we decided against a ZIP
-      archive.
+   2. We considered packaging these in a ZIP archive as well as not. Two
+      important considerations we weighed were the high latency of retrieval of
+      Amazon Glacier (which would make file-by-file retrieval of an object very
+      slow) and the ability to update individual parts of an object without
+      having to re-create (and re-upload) the entire object). Since we chose
+      Google Cloud Storage over Amazon Glacier, we decided against a ZIP archive
+      to avoid having to re-create the ZIP file with every update.
 1. [OCFL](https://ocfl.io/0.2/spec/)
    1. A new specification for storing binary and metadata. Often explained to me
-      as "bags with versions."
-1. [Google Cloud Storage](https://cloud.google.com/storage/)
-   1. Less of a specification than a platform. The proposal here is to simply
-      store objects in a hierarchy and rely on GCS' versioning, checksum, and
+      as "Bags with versions."
+1. Custom package stored in [Google Cloud Storage](https://cloud.google.com/storage/)
+   1. We store objects in a hierarchy and rely on GCS' versioning, checksum, and
       file metadata features rather than building an external "manifest" as in
       OCFL and BagIt.
    1. Files can be stored in a hierarchy similar to the following:
@@ -79,23 +83,26 @@ This list is not exhaustive, but it's the options we evaluated.
         - <resource-id>.json
       ```
    1. This can also be read as "cloud option which supports versioning," this
-      includes AWS. We chose GCS because we wanted to use archival storage
+      includes S3. We chose GCS because we wanted to use archival storage
       (Coldline) with constant access times, whereas for access we would have had
       to wait a few hours for Amazon Glacier.
    1. Files in GCS hold their own checksums as a property of the file, and the
-      uploaded metadata also contains our own calculated checksums.
+      uploaded metadata also contains our own calculated checksums. This gives us
+      everything we need to build a BagIt or OCFL manifest without having to
+      re-checksum the content files.
 
 ### Test Cases
 
-The following test cases are largely academic. We haven't done each of these,
-but they've helped to think through what it would take to implement each in the
+The following test cases are largely academic. We are in the process of building
+this fuctionality now, and will perform these actions as we go along.  But
+they've helped us think through what it would take to implement each of the
 above options.
 
-1. Preserve a Book with N pages.
-1. Delete a full book
-1. Delete a page from a book which is already preserved.
-1. Add a page to a book which is already preserved.
-1. Preserve a Book with Books which have Pages (A multi-volume work)
+1. Preserve a Book with N Pages
+1. Delete a full Book
+1. Delete a Page from a Book which is already preserved.
+1. Add a Page to a Book which is already preserved.
+1. Preserve a Book with child Volumes which have Pages (A multi-volume work)
 
 ### Preserve a Book with N Pages
 
@@ -104,20 +111,19 @@ above options.
 1. Create a base directory named `<book-id>`
 1. Create a `bagit.txt` in the base directory.
 1. Optionally create a `bag-info.txt`
-1. Iterate through each page and create a file in `<book-id>/data` named
+1. Iterate through each Page and create a file in `<book-id>/data` named
    `<file-id>-<file-name>.<file-extension>` with the binary data. Store the
    metadata in `<book-id>/metadata/<file-id>.json`.
-1. Either when done, or as each file is added, update `manifest-md5.json` and
-   `tagmanifest-md5.json` with the checksums for each file in `data` and
+1. Either when done, or as each file is added, update `manifest-md5.txt` and
+   `tagmanifest-md5.txt` with the checksums for each file in `data` and
    `metadata`.
 1. Optionally update `bag-info.txt` to include the `Payload-Oxum` and `Bag-Size`
 
 **Pros**:
 
-1. We have a bag that people can look at and reasonably understand.
-1. External systems may possible be able to ingest the material, but in practice
-   this is pretty unlikely - bag profiles vary substantially from vendor to
-   vendor.
+1. We have a Bag that people can look at and reasonably understand.
+1. External systems may able to ingest the material, but in practice this is
+   pretty unlikely - Bag profiles vary substantially from vendor to vendor.
 
 **Cons**:
 
@@ -133,11 +139,12 @@ above options.
 1. We have to prevent future changes to a child from persisting to preservation
    storage until this large change is done. Otherwise, the manifest will be
    corrupted by a race condition:
-   1. Preservation starts. Pages start to persist into a bag.
+   1. Preservation starts. Pages start to persist into a Bag.
    2. Page gets modified out of band (label changed or page switched)
    3. Page's changes get sent to be preserved.
-   4. Page gets preserved in its spot in the bag, updating manifest.
-   5. Initial preservation ends. Updates manifest, but has out-of-date checksum
+   4. Page gets preserved in place in the Bag, updating the manifest.
+   5. Initial preservation ends. It updates manifest, overwriting the manifest
+      changes from the modified Page, resulting in out-of-date checksum
       information.
 
 #### OCFL
@@ -155,7 +162,7 @@ required cleanup.
 
 1. Create a base directory named `<book-id>`
 1. Create a file named `0=ocfl_object_1.0` with the appropriate contents.
-1. Create a v1 directory
+1. Create a `v1` directory
 1. Copy all content files and metadata files into `<book-id>/v1/content`, separated
    by ID. So, for instance, `<page1>` would be in `<book-id>/v1/content/<page1>`,
    and have two files: `<page1>.json` and
@@ -186,7 +193,7 @@ required cleanup.
    1. Preservation starts. Pages start to persist into a directory.
    2. Page gets modified out of band (label changed or page switched)
    3. Page's changes get sent to be preserved.
-   4. Page gets preserved as a new version of the bag, updating the
+   4. Page gets preserved as a new version of the Bag, updating the
       `inventory.json` and incrementing the version counter.
    5. Initial preservation ends. Updates inventory, but has out-of-date checksum
       information.
@@ -196,18 +203,18 @@ required cleanup.
 
 #### Google Cloud Storage
 
-A small note about GCS - I'm going to call paths "directories", but in GCS it's
-  all just naming semantics. `foo/bar/txt.yml` isn't a file in the directory
-  `bar`, it's a file that has a name which happens to have slashes in it. The
-  GCS tools just visualize them as directories to be nice.
+A small note about GCS - I'm going to call paths "directories", but similar to
+OCFL, it's all just naming semantics. `foo/bar/txt.yml` isn't a file in the
+directory `bar`, it's a file that has a name which happens to have slashes in it.
+The GCS tools just visualize them as directories to be nice.
 
 1. Create a base directory named `<book-id>`
 1. Upload JSON for base object to `<book-id>/<book-id>.json`
 1. If there are any binary files attached, upload them to a `data` directory,
    like `<book-id>/data/<file-id>-<file-name>.<file-extension>`
 1. For every child, recursively start at step 1, but start in a directory named
-   after its hierarchy. IE, for a page, it would go into
-   `<book-id>/data/<page-id>'
+   after its hierarchy. IE, for a Page, it would go into
+   `<book-id>/data/<page-id>`
 
 **Pros**:
 
@@ -235,7 +242,7 @@ A small note about GCS - I'm going to call paths "directories", but in GCS it's
 
 #### BagIt
 
-Either don't delete anything or store bags in GCS and delete the parent
+Either don't delete anything or store Bags in GCS and delete the parent
 directory, relying on versioning.
 
 #### OCFL
@@ -243,7 +250,7 @@ directory, relying on versioning.
 See Deletion in the [OCFL Implementation
 Notes](https://ocfl.io/0.2/implementation-notes/#forward-delta)
 
-1. Create a new `<book-id>/v2 directory.
+1. Create a new `<book-id>/v2` directory.
 2. Create a `v2/inventory.json` file with with a new `version` entry that has
    nothing in the `state` property.
 3. Create a new `v2/inventory.json.sha512`
@@ -255,20 +262,20 @@ post-delete.
 
 #### Google Cloud Storage
 
-Enable versioning and delete all files that are in the parent `directory` (a
+Enable versioning and delete all files that are in the parent "directory" (a
 reminder there are no "directories", so no structure is left around.)
 
-### Delete a page from a book which is already preserved.
+### Delete a Page from a Book which is already preserved.
 
 #### BagIt
 
 Rely on GCS versioning.
 
 1. Upload the parent's new metadata file to `/<book-id>/metadata/<book-id>.json`
-1. Delete the page's metadata and binary files
-1. Update the `manifest` and `tagmanifest`
+1. Delete the Page's metadata and binary files
+1. Update the `manifest-md5.txt` and `tagmanifest-md5.txt`
 
-All of the same locking problems from "adding a book" exist here - you'll have
+All of the same locking problems from "Preserve a Book with N Pages" exist here - you'll have
 to lock the entire object hierarchy. This can probably be implemented as an
 `after_delete` hook on the child object, but will have to be careful that locks
 don't run into one another and the update of the parent object's membership
@@ -281,12 +288,12 @@ Notes](https://ocfl.io/0.2/implementation-notes/#forward-delta)
 
 1. Create a new `<book-id>/v2 directory.
 2. Create a `v2/inventory.json` file with with a new `version` entry that
-   doesn't have the now-deleted page's metadata and binary files in it
+   doesn't have the now-deleted Page's metadata and binary files in it
 3. Create a new `v2/inventory.json.sha512`
 4. Copy the new `inventory.json` and `inventory.json.sha512` to the top
    directory.
 
-All of the same locking problems from "adding a book" exist here - you'll have
+All of the same locking problems from "Preserve a Book with N Pages" exist here - you'll have
 to lock the entire object hierarchy. This can probably be implemented as an
 `after_delete` hook on the child object, but will have to be careful that locks
 don't run into one another and the update of the parent object's membership
@@ -295,25 +302,25 @@ doesn't cause unnecessary changes in the manifests.
 ### Google Cloud Storage
 
 1. Update the `<book-id>.json` which holds membership array.
-2. Delete the child page's metadata and binary content.
+2. Delete the child Page's metadata and binary content.
 
 These operations can happen independently of one another, and so can just be an
 `after_save` and `after_delete` hook on those resources.
 
-### Add a page to a book which is already preserved.
+### Add a Page to a Book which is already preserved.
 
 #### BagIt
 
-There are a couple options here. We can either create a whole new bag, or rely
-on GCS' versioning. I'm going to assume GCS versioning, because making a new bag
+There are a couple options here. We can either create a whole new Bag, or rely
+on GCS' versioning. I'm going to assume GCS versioning, because making a new Bag
 is pretty expensive.
 
 1. Upload the parent's new metadata file to `/<book-id>/metadata/<book-id>.json`
-1. Delete the page's old metadata and binary files.
-1. Upload the page's new metadata and binary files.
-1. Update the `manifest` and `tagmanifest`
+1. Delete the Page's old metadata and binary files.
+1. Upload the Page's new metadata and binary files.
+1. Update the `manifest-md5.txt` and `tagmanifest-md5.txt`
 
-All of the same locking problems from "adding a book" exist here - you'll have
+All of the same locking problems from "Preserve a Book with N Pages" exist here - you'll have
 to lock the entire object hierarchy.
 
 #### OCFL
@@ -321,7 +328,7 @@ to lock the entire object hierarchy.
 See Addition and Updating in the [OCFL Implementation
 Notes](https://ocfl.io/0.2/implementation-notes/#forward-delta)
 
-1. Create a new `<book-id>/v2` directory`
+1. Create a new `<book-id>/v2` directory
 1. Create an `inventory.json`
 1. Add the new `metadata` and `binary` files to `v2/content`
    directory
@@ -331,13 +338,13 @@ Notes](https://ocfl.io/0.2/implementation-notes/#forward-delta)
 1. Add the new `metadata` and `binary` files to the `state` key of
    `inventory.json`
 
-All of the same locking problems from "adding a book" exist here - you'll have
+All of the same locking problems from "Preserve a Book with N Pages" exist here - you'll have
 to lock the entire object hierarchy.
 
 #### Google Cloud Storage
 
 1. Update the parent's `<book-id>.json` when the parent's membership is updated
-1. Upload the new page's `metadata` and `binary` files with the appropriate
+1. Upload the new Page's `metadata` and `binary` files with the appropriate
    names.
 
 If any locking is necessary, it will only have to be those files with new
@@ -346,10 +353,10 @@ per-resource basis.
 
 ### Preserve a Book with Books which have Pages (A multi-volume work)
 
-The summary for this is just treat child books as if they're "pages", and allow
+The summary for this is just treat child Books as if they're "Pages", and allow
 for everything to go arbitrarily deep. There's no real difference between this
-and previous cases, except that Google Cloud Storage can handle each "volume"
-without ever touching its parent. Deletions and additions of "pages" never have to go up more
+and previous cases, except that Google Cloud Storage can handle each "Volume"
+without ever touching its parent. Deletions and additions of "Pages" never have to go up more
 than one level in the hierarchy.
 
 ## What did we do
@@ -363,7 +370,7 @@ break, and didn't require any special locking mechanisms. The implementation can
 be seen [here](https://github.com/pulibrary/figgy/pull/2821).
 
 Based on the above I personally recommend that if one chooses either OCFL or
-BagIt that you either store everything flat (every "page"/"volume"/"book" in the
+BagIt that you either store everything flat (every "Page"/"Volume"/"Book" in the
 same object root) or have a very good and well-tested pessimistic locking
 implementation.
 
