@@ -80,3 +80,5 @@ config.assets.prefix = "/discovery/assets/"
 ```
 
 So, the end changes were relatively small to get this working, but figuring out WHAT small changes were needed was time-consuming. I hope writing this down saves someone (maybe even future me!) a headache.
+
+Many thanks to my Princeton University Library colleagues who helped me solve this, especially [Francis Kayiwa](https://github.com/kayiwa) and [Hector Correa](https://github.com/hectorcorrea). 
