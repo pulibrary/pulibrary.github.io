@@ -4,3 +4,4 @@ source "https://rubygems.org"
 # https://pages.github.com/versions/ as possible.
 gem 'jekyll', '=3.9.0'
 gem 'jekyll-theme-dinky', '=0.2.0'
+gem 'kramdown-parser-gfm'
