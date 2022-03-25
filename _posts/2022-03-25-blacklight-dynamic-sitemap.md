@@ -13,7 +13,7 @@ For [pdc_discovery](https://github.com/pulibrary/pdc_discovery), a blacklight ap
 
 Implementing a dynamic sitemap in this way requires, as one might expect, adding the `blacklight_dynamic_sitemap` gem to one's Blacklight application. This part of the process went well and behaved exactly as described in the gem's README. However, getting it to work also requires configuring solr to calculate a hash value for each document, and that part gave me some trouble. I'm documenting it here for my own future reference and in case it helps anyone else. 
 
-I don't know why exactly, but [the solr configuration recommended in the `blacklight_dynamic_sitemap`](https://github.com/sul-dlss/blacklight_dynamic_sitemap/blob/master/solr/conf/solrconfig.xml#L19-L42) did not work for me. However, [a slightly different configuration](https://github.com/psu-libraries/psulib_blacklight/blob/main/solr/conf/solrconfig.xml#L59-L71), adapted from Penn State's implementation of the same solution, did work. The relevant stanza of my `solrconfig.xml` file now looks like this:
+I don't know why exactly, but [the solr configuration recommended in the `blacklight_dynamic_sitemap`](https://github.com/sul-dlss/blacklight_dynamic_sitemap/blob/b0a90b48e7bc3f41e37e6b5b5bf35cad001e6bc1/solr/conf/solrconfig.xml#L19-L42) did not work for me. However, [a slightly different configuration](https://github.com/psu-libraries/psulib_blacklight/blob/7a6314977e9b014212b02d651d63780b40edcc10/solr/conf/solrconfig.xml#L59-L71), adapted from Penn State's implementation of the same solution, did work. The relevant stanza of my `solrconfig.xml` file now looks like this:
 
 ```
   <updateProcessor class="solr.processor.SignatureUpdateProcessorFactory" name="add_hash_id">
