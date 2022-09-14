@@ -1,0 +1,56 @@
+---
+date: TBD
+title: Moving Rails Apps off of Webpacker
+layout: default
+---
+
+## Moving Rails Apps off of Webpacker
+**by Anna Headley, [add your name here]**
+
+It is thankfully time to excise webpacker from all our Rails applications, and there are a lot of options for which tools to adopt.
+
+For more background, see
+* [DHH's summary of JavaScript in Rails 7](https://world.hey.com/dhh/rails-7-will-have-three-great-answers-to-javascript-in-2021-8d68191b)
+* The [Rails 7 release announcement](https://rubyonrails.org/2021/12/15/Rails-7-fulfilling-a-vision)
+* Rails Guides on [Working with Javascript](https://guides.rubyonrails.org/working_with_javascript_in_rails.html) and the [Asset Pipeline](https://guides.rubyonrails.org/asset_pipeline.html)
+
+Our Rails apps at PUL are not running on Rails 7 yet but we have been moving off
+of webpacker in preparation for this upgrade, and because webpacker is no longer
+supported. A variety of us have tried a variety of options on a variety of apps,
+and we summarize our experiments and reflections here.
+
+### Vite
+
+On the Digital Library Services (DLS) team we've landed on Vite as a nice option
+for serving both javascript and CSS. It's similar to jsbundling-rails but has
+more features, and admittedly a smaller adoption footprint. We tried moving our
+largest app, [figgy](https://github.com/pulibrary/figgy), first to
+jsbundling-rails and then to vite. They are very similar under the hood, and the
+changes we made to our actual javascript were similar. We found the Vite
+configuration slightly simpler, especially with respect to filename conventions
+and serving through the bundler and sprockets at the same time. Because of this
+and Vite's larger feature set we've decided to move forward using Vite for now.
+
+
+### Importmaps
+
+Importmaps is supposed to allow you to manage your javascript dependencies
+without having node installed. It's the simplest of the new options so on DLS we
+tried it with our simplest rails app. Like all our other apps, this one uses our
+vue.js-based design system, [lux](https://github.com/pulibrary/lux). We got
+pretty far with importmaps (and dartsass-rails), but we weren't able to get this
+integration with our design system. My speculation is that lux would need to
+provide a node package that bundles all its dependencies. This is partially
+based on a [DHH
+post](https://discuss.rubyonrails.org/t/rails-es6-based-replacement-for-webpacker/78656/7)
+where he says, "I’d love to see a method that downloads the pinned dependencies
+at some point, but it’s not trivial for packages that have nested dependencies,
+which haven’t been bundled into a single dist file."
+
+### Jsbundling-rails with esbuild
+
+### Shakapacker
+
+### General thoughts / Lessons learned
+
+TODO add a note about how vue hijacks page events and workaround we needed.
