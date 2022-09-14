@@ -54,3 +54,11 @@ which haven’t been bundled into a single dist file."
 ### General thoughts / Lessons learned
 
 TODO add a note about how vue hijacks page events and workaround we needed.
+
+### But what's it like to work with?
+
+Migration is only the first step, right? On DLS, we haven't had a work cycle yet
+with the app we moved to vite so we can't speak much to the developer
+experience. It is straightforward to run `bin/vite dev` and have autoreloading
+if you don't want to refresh your browser to see changes.
+yet had a work cycle s
