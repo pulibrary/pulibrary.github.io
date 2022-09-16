@@ -31,6 +31,13 @@ configuration slightly simpler, especially with respect to filename conventions
 and serving through the bundler and sprockets at the same time. Because of this
 and Vite's larger feature set we've decided to move forward using Vite for now.
 
+On the Research Data and Scholarship Services (RDSS) team we utilized Vite after 
+DLS and DACS each converted one of thier repositories.  
+[pdc_describe](https://github.com/pulibrary/pdc_describe/pull/397/files) was 
+converted to utilize vite and the transition went smoothly.  
+One change that was missed in the initial update was that vite does not allow for
+(or need) testing assets to be served from the [development server](https://github.com/pulibrary/pdc_describe/pull/403). 
+
 
 ### Importmaps
 
@@ -50,6 +57,8 @@ which haven’t been bundled into a single dist file."
 ### Jsbundling-rails with esbuild
 
 ### Shakapacker
+
+We tried shakapacker in [pdc_discovery](https://github.com/pulibrary/pdc_discovery/pull/307).  It went relatively smoothly, but we never decided to put it into production.
 
 ### General thoughts / Lessons learned
 
