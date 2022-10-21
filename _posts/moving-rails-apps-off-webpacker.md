@@ -30,11 +30,23 @@ configuration slightly simpler, especially with respect to filename conventions
 and serving through Vite and sprockets at the same time. Because of this
 and Vite's larger feature set we've decided to move forward using Vite for now.
 
-[DPUL](https://github.com/pulibrary/dpul/pull/1380) is the only app that DLS has migrated so far. We also tried migrating our largest app [Figgy](https://github.com/pulibrary/figgy), but found ourselves blocked by tricky dependency managemnt in one of the libraries we use. We are planning to remove this library from Figgy eventually, so we set aside the migration for now. Since the blocker came up in the esbuild configuration, it was an issue in both Vite and jsbundling-rails.
+[DPUL](https://github.com/pulibrary/dpul/pull/1380) is the only app that DLS has migrated so far. We also tried migrating our largest app [Figgy](https://github.com/pulibrary/figgy), but found ourselves blocked by tricky dependency management in one of the libraries we use. We are planning to remove this library from Figgy eventually, so we set aside the migration for now. Since the blocker came up in the esbuild configuration, it was an issue in both Vite and jsbundling-rails.
 
 The Discovery and Access Services team migrated the Blacklight Catalog application [Orangelight](https://github.com/pulibrary/orangelight/pull/3164) to Vite as well.
 
-On the Research Data and Scholarship Services (RDSS) team we utilized Vite after DLS and DACS each converted one of thier repositories. [pdc_describe](https://github.com/pulibrary/pdc_describe/pull/397/files) was converted to utilize vite and the transition went smoothly. One change that was missed in the initial update was that vite does not allow for (or need) testing assets to be served from the [development server](https://github.com/pulibrary/pdc_describe/pull/403).
+On the Research Data and Scholarship Services (RDSS) team we utilized Vite after DLS and DACS each converted one of thier repositories. [pdc_describe](https://github.com/pulibrary/pdc_describe/pull/397/files) was converted to utilize vite and the transition went smoothly.
+
+#### Vite tips / lessons learned
+
+- Learn to pronounce it!: https://vitejs.dev/guide/#overview
+- Vite does not allow for (or need) testing assets to be served from the [development server](https://github.com/pulibrary/pdc_describe/pull/403).
+
+#### But what's it like to work with?
+
+Migration is only the first step, right? On DLS, we haven't had a work cycle yet
+with the app we moved to vite so we can't speak much to the developer
+experience. It is straightforward to run `bin/vite dev` and have autoreloading
+if you don't want to refresh your browser to see changes.
 
 ### Importmaps
 
@@ -59,14 +71,9 @@ DLS tested this migration on Figgy, our largest app. The initial upgrades went s
 
 We tried shakapacker in [pdc_discovery](https://github.com/pulibrary/pdc_discovery/pull/307).  It went relatively smoothly, but we never decided to put it into production.
 
-### General thoughts / Lessons learned
+### General tips / lessons learned
 
-TODO add a note about how vue hijacks page events and workaround we needed.
-
-### But what's it like to work with?
-
-Migration is only the first step, right? On DLS, we haven't had a work cycle yet
-with the app we moved to vite so we can't speak much to the developer
-experience. It is straightforward to run `bin/vite dev` and have autoreloading
-if you don't want to refresh your browser to see changes.
-yet had a work cycle s
+- When loading both local javascript and Vue.js components, you have to be careful
+  about how you order them. Vue.js takes over the eventing system so once it's
+  been initialized you can't bind events from your local code anymore. Here's a
+  [vue issue about it](https://github.com/vuejs/vue/issues/3587).
