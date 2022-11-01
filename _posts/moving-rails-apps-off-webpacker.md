@@ -5,7 +5,7 @@ layout: default
 ---
 
 ## Moving Rails Apps off of Webpacker
-**by Anna Headley, Carolyn Cole, Eliot Jordan, [add your name here]**
+**by Anna Headley, Carolyn Cole, Eliot Jordan, Jane Sandberg, [add your name here]**
 
 It is thankfully time to excise webpacker from all our Rails applications, and there are a lot of options for which tools to adopt.
 
@@ -33,6 +33,8 @@ and Vite's larger feature set we've decided to move forward using Vite for now.
 [DPUL](https://github.com/pulibrary/dpul/pull/1380) is the only app that DLS has migrated so far. We also tried migrating our largest app [Figgy](https://github.com/pulibrary/figgy), but found ourselves blocked by tricky dependency management in one of the libraries we use. We are planning to remove this library from Figgy eventually, so we set aside the migration for now. Since the blocker came up in the esbuild configuration, it was an issue in both Vite and jsbundling-rails.
 
 The Discovery and Access Services team migrated the Blacklight Catalog application [Orangelight](https://github.com/pulibrary/orangelight/pull/3164) to Vite as well.
+We looked into moving some of our Sprockets usage to Vite as well, but decided to keep our scope limited to the webpacker-to-vite migration.
+With the help of [Vite's migration guide](https://vite-ruby.netlify.app/guide/migration.html#webpacker-%F0%9F%93%A6), this was a smooth transition.
 
 On the Research Data and Scholarship Services (RDSS) team we utilized Vite after DLS and DACS each converted one of thier repositories. [pdc_describe](https://github.com/pulibrary/pdc_describe/pull/397/files) was converted to utilize vite and the transition went smoothly.
 
@@ -40,6 +42,15 @@ On the Research Data and Scholarship Services (RDSS) team we utilized Vite after
 
 - Learn to pronounce it!: https://vitejs.dev/guide/#overview
 - Vite does not allow for (or need) testing assets to be served from the [development server](https://github.com/pulibrary/pdc_describe/pull/403).
+- If you import any files that have a file extension other than `.js`, you will need to include
+the file extension when importing it.  We had a few files with an `.es6` file extension, so we
+had to change this:
+
+      import BookCoverManager from '../orangelight/book_covers'
+
+    to this:
+
+      import BookCoverManager from '../orangelight/book_covers.es6'
 
 #### But what's it like to work with?
 
@@ -47,6 +58,9 @@ Migration is only the first step, right? On DLS, we haven't had a work cycle yet
 with the app we moved to vite so we can't speak much to the developer
 experience. It is straightforward to run `bin/vite dev` and have autoreloading
 if you don't want to refresh your browser to see changes.
+
+On DACS, we have made some small changes to Orangelight's javascript since moving to vite,
+and haven't noticed much difference from our previous experience with webpacker.
 
 ### Importmaps
 
