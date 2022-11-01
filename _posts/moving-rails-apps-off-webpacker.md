@@ -5,7 +5,7 @@ layout: default
 ---
 
 ## Moving Rails Apps off of Webpacker
-**by Anna Headley, Carolyn Cole, Eliot Jordan, Jane Sandberg, [add your name here]**
+**by Anna Headley, Carolyn Cole, Eliot Jordan, Jane Sandberg**
 
 It is thankfully time to excise webpacker from all our Rails applications, and there are a lot of options for which tools to adopt.
 
