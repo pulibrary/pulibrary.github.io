@@ -70,8 +70,7 @@ tried it with our simplest rails app. Like all our other apps, this one uses our
 vue.js-based design system, [lux](https://github.com/pulibrary/lux). We got
 pretty far with importmaps (and dartsass-rails), but we weren't able to get this
 integration with our design system. My speculation is that lux would need to
-provide a node package that bundles all its dependencies. This is partially
-based on a [DHH
+provide a node package that bundles the full source for all its dependencies? This is partially based on a [DHH
 post](https://discuss.rubyonrails.org/t/rails-es6-based-replacement-for-webpacker/78656/7)
 where he says, "I’d love to see a method that downloads the pinned dependencies
 at some point, but it’s not trivial for packages that have nested dependencies,
