@@ -64,7 +64,7 @@ and haven't noticed much difference from our previous experience with webpacker.
 
 ### Importmaps
 
-Importmaps is supposed to allow you to manage your javascript dependencies
+The new default option for new projects serving javascript in Rails 7 is Importmaps. Importmaps is supposed to allow you to manage your javascript dependencies
 without having node installed. It's the simplest of the new options so on DLS we
 tried it with our simplest rails app. Like all our other apps, this one uses our
 vue.js-based design system, [lux](https://github.com/pulibrary/lux). We got
@@ -78,15 +78,12 @@ which haven’t been bundled into a single dist file."
 
 ### Jsbundling-rails with esbuild
 
-DLS tested this migration on Figgy, our largest app. The initial upgrades went smoothly and there was lots of primary and secondary documentation online. The configuration ended up feeling awkward and we decided to use Vite instead.
+Rails 7 can also generate project with traditional javascript bundling tools such as esbuild using the jsbundling-rails gem. This seems to be the most common path away from webpacker. DLS tested this migration on Figgy, our largest app. The initial upgrades went smoothly and there was lots of primary and secondary documentation online. The configuration ended up feeling awkward and we decided to use Vite instead.
 
 ### Shakapacker
 
-We tried shakapacker in [pdc_discovery](https://github.com/pulibrary/pdc_discovery/pull/307).  It went relatively smoothly, but we never decided to put it into production.
+The last option we explored for replacing webpacker is [Shakapacker](https://github.com/shakacode/shakapacker), a webpacker fork. We tried Shakapacker in [pdc_discovery](https://github.com/pulibrary/pdc_discovery/pull/307).  It went relatively smoothly, but we never decided to put it into production.
 
 ### General tips / lessons learned
 
-- When loading both local javascript and Vue.js components, you have to be careful
-  about how you order them. Vue.js takes over the eventing system so once it's
-  been initialized you can't bind events from your local code anymore. Here's a
-  [vue issue about it](https://github.com/vuejs/vue/issues/3587).
+- Whichever webpacker replacement you choose, if you load both local javascript and vue.js components, you have to be careful about how you order them. Vue.js takes over the eventing system so once it's been initialized you can't bind events from your local code anymore. Here's a [vue issue about it](https://github.com/vuejs/vue/issues/3587).
