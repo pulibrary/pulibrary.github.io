@@ -59,7 +59,7 @@ with the app we moved to Vite so we can't speak much to the developer
 experience. It is straightforward to run `bin/vite dev` and have autoreloading
 if you don't want to refresh your browser to see changes.
 
-On DACS, we have made some small changes to Orangelight's javascript since moving to vite,
+On DACS, we have made some small changes to Orangelight's javascript since moving to Vite,
 and haven't noticed much difference from our previous experience with webpacker.
 
 ### Importmaps
