@@ -55,7 +55,7 @@ had to change this:
 #### But what's it like to work with?
 
 Migration is only the first step, right? On DLS, we haven't had a work cycle yet
-with the app we moved to vite so we can't speak much to the developer
+with the app we moved to Vite so we can't speak much to the developer
 experience. It is straightforward to run `bin/vite dev` and have autoreloading
 if you don't want to refresh your browser to see changes.
 
