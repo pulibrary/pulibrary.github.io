@@ -24,7 +24,7 @@ and we summarize our experiments and reflections here.
 On the Digital Library Services (DLS) team we've landed on Vite as a nice option
 for serving both javascript and CSS. It's similar to jsbundling-rails but has
 more features, and admittedly a smaller adoption footprint. We tried migrating one app to
-jsbundling-rails and then to vite. They are very similar under the hood, and the
+jsbundling-rails and then to Vite. They are very similar under the hood, and the
 changes we made to our actual javascript were similar. We found the Vite
 configuration slightly simpler, especially with respect to filename conventions
 and serving through Vite and sprockets at the same time. Because of this
