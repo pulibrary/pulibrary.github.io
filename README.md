@@ -32,6 +32,10 @@ layout: default
 This is my post.
 ```
 
+Posts should include a `<!--more-->` marker to separate the intro paragraph (which is displayed on
+the index page) from the rest of the post (which a reader would need to click through to the post
+page to read).
+
 ## And [Here is a Cycling Fish](https://giphy.com/embed/l46C9fDGilW6VoDGE)
 
 [Really!](https://giphy.com/embed/l46C9fDGilW6VoDGE)

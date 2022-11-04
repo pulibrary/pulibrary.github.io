@@ -19,6 +19,7 @@ rake tasks to re-generate very large sitemaps is less than ideal because it
 takes time and the sitemaps become stale quickly. Given these drawbacks to our 
 existing approach, I was excited to try the more recent solution in use at 
 Stanford and Penn State (among others): [blacklight_dynamic_sitemap](https://github.com/sul-dlss/blacklight_dynamic_sitemap).
+<!--more-->
 
 [Jack Reed](https://github.com/mejackreed), one of the authors of this 
 solution, has a good [blog post](https://www.jack-reed.com/2020/01/10/sitemaps-that-scale.html) 

@@ -10,6 +10,7 @@ layout: default
 You know that sinking feeling you get when you've been working on an application for months, you're about to launch it, and then a new requirement appears at the last minute? It's been one of those weeks. However, after a couple of days of head scratching, I'm happy to report that we just might keep our launch schedule after all. 
 
 The requirement in question *shouldn't* be hard. We need to take [PDC Discovery](https://github.com/pulibrary/pdc_discovery), PUL's new research data discovery application, and serve it out at a subdirectory. So, instead of delivering it at `https://pdc-discovery-prod.princeton.edu` (which we always knew was a placeholder), it needs to appear at `https://datacommons.princeton.edu/discovery/`. That `/discovery` at the end is the tricky bit.
+<!--more-->
 
 ### Configuring the load balancer
 
