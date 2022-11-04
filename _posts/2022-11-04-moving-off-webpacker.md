@@ -1,5 +1,5 @@
 ---
-date: TBD
+date: 2022-11-04 13:25:00 -0400
 title: Moving Rails Apps off of Webpacker
 layout: default
 ---
