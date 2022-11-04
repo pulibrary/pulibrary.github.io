@@ -15,7 +15,7 @@ inter-related questions that took us a lot of discussion and exploration to reac
 consensus on are:
 1. What is the best unit of preservation?
 1. Should preservation packages be compressed and/or archived?
-
+<!--more-->
 
 ### What is the best unit of preservation?
 

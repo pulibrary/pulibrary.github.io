@@ -18,6 +18,7 @@ Our Rails apps at PUL are not running on Rails 7 yet but we have been moving off
 of webpacker in preparation for this upgrade, and because webpacker is no longer
 supported. A number of us have tried a variety of options on a variety of apps,
 and we summarize our experiments and reflections here.
+<!--more-->
 
 ### Vite
 
