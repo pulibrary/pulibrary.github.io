@@ -56,7 +56,13 @@ title described above.
 
 ### Accessible descriptions
 
-You should include a detailed text description of your chart.  An easy way to do this is to
+You should include a detailed text description of your chart.  This is particularly important since
+[Mermaid doesn't provide any information about the relationships between nodes
+to screen readers](https://github.com/mermaid-js/mermaid/issues/2395).  Without a good description,
+screen reader users will just get
+[a meaningless list of the names of the chart nodes](https://github.com/mermaid-js/mermaid/issues/2395#issuecomment-1051278754).
+
+An easy way to do this is to
 simply add it in the markdown itself, outside the memaid chart -- this way, all users can benefit from the description.
 
 If you don't want the description to display
@@ -67,9 +73,17 @@ a [`<desc>` element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/de
 
 [Mermaid has several color themes](https://mermaid.js.org/config/theming.html), and gives you the ability to customize themes as well.  Make sure that the theme you use has sufficient contrast, including when Windows High Contrast mode or a dark theme is turned on.  The `neutral` theme typically has good color contrast.
 
+Is there a way to set the background color???
+
+Also, see [this github issue](https://github.com/mermaid-js/mermaid/issues/3691)
+
 ### Iframe
 
 As described in the [Github blog post](https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/), Github places mermaid diagrams into `<iframe>` elements.  Unfortunately, the iframes it generates don't have `title` attributes.  So, in a page with several diagrams,
 there is no good way for a screen reader to know which iframe is which.  When I open a document with several mermaid charts in the voiceover rotor, all of the frames are named "Render frame".
 
 ![The voiceover rotor lists 15 frames, all of them named "render frame"](/assets/images/mermaid-rotor.png)
+
+## Further reading
+
+* [Adrian Roselli's blog post](https://adrianroselli.com/2022/03/maybe-dont-use-flow-charts-on-github.html)
