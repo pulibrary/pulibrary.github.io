@@ -5,14 +5,14 @@ layout: default
 ---
 
 ## Accessible Mermaid charts in Github Markdown
-**by Jane Sandberg**
+**by Christina Chortaria, Regine Heberlein, and Jane Sandberg**
 
 After we saw [Github's announcement about including Mermaid diagrams in markdown
 files](https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/), we started using them extensively!
 We use these diagrams to confirm understanding
 with stakeholders,
 keep our diagrams up-to-date and under source control, and even plan work cycles.  Our colleague, Carolyn Cole,
-[gave an excellent talk at RubyConf on how we use Mermaid charts](https://www.youtube.com/watch?v=W-UsnbGH2c8).
+gave [an excellent talk at RubyConf on how we use Mermaid charts](https://www.youtube.com/watch?v=W-UsnbGH2c8).
 
 As with any complex diagrams, though, it takes
 some thought to make these charts accessible.
@@ -25,6 +25,20 @@ Every mermaid chart in github markdown should have the following:
 * A detailed text description, either outside the chart, or within it and identified by the `accDescription` keyword.
 * A color scheme with sufficient contrast, even in dark mode or Windows high contrast mode.  The `neutral` color scheme is a good option.
 <!--more-->
+### Known issues
+
+* [Mermaid doesn't tell assistive technology about the connections between nodes](https://github.com/mermaid-js/mermaid/issues/2395).  A screen reader will read a mermaid diagram as a jumble of unrelated text from the diagram.  This is why providing a text description of your diagram is very important.
+
+* In macOS:   
+   * Using Safari - Voice over does not announce any iframe(s)
+   * Using Firefox - Voice over announces iframe(s) with no title
+   * Using Chrome - Voice over does not announce any iframe(s)
+
+* In Windows OS (next step) 
+
+* In Linux (Orca?)
+
+
 ### Accessible names
 
 Mermaid gives us several ways to provide an accessible name for the SVG diagrams it produces.
