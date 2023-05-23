@@ -12,7 +12,7 @@ files](https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/),
 We use these diagrams to confirm understanding
 with stakeholders,
 keep our diagrams up-to-date and under source control, and even plan work cycles.  Our colleague, Carolyn Cole,
-gave [an excellent talk at RubyConf on how we use Mermaid charts](https://www.youtube.com/watch?v=W-UsnbGH2c8).
+gave <a href="https://www.youtube.com/watch?v=W-UsnbGH2c8" aria-describedby="carolyn-youtube-talk-desc">an excellent talk at RubyConf on how we use Mermaid charts</a> <span id="carolyn-youtube-talk-desc">[youtube video with English captions]</span>.
 
 As with any complex diagrams, though, it takes
 some planning to make these charts accessible.  If your team doesn't have the capacity to implement
