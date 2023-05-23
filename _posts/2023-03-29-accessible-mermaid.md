@@ -24,9 +24,8 @@ Every mermaid chart in github markdown should have the following:
 
 * An accessible name, provided by a `title` in the front matter or some other way.
 * A detailed text description, either outside the chart, or within it and identified by the `accDescription` keyword.
-* No `theme` specified in the `%%{init}%%` block (otherwise, the chart may be unreadable in dark mode)
-* `themeVariables` specified in the `%%{init}%%` block to improve on the color contrast issues in the
-default base theme.
+* No `theme` specified in the `%%{init}%%` block (otherwise, the chart may be unreadable in dark mode).
+* If `themeVariables` are specified in the `%%{init}%%` block, ensure the results have sufficient contrast when dark mode is turned off or on.
 <!--more-->
 ### Known issues
 
@@ -90,13 +89,19 @@ a [`<desc>` element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/de
 
 [Mermaid has several color themes](https://mermaid.js.org/config/theming.html), each of which has
 [some color contrast issues](https://github.com/mermaid-js/mermaid/issues/3691) at the time of
-writing.  Additionally, if you specify a theme in the github integration, it also overrides
-the built-in support for dark mode, sometimes making text and lines almost invisible in your charts
-when using Github's dark themes.
+writing.
 
-Fortunately, mermaid gives you the ability to customize themes.
+Fortunately, if you don't specify a color theme, the default behavior of Github's mermaid js
+integration is pretty good.  It detects if dark mode is on, and adjusts the colors in the
+diagram to work well with the detected background color.  However, if you specify a Mermaid
+theme in your `%%{init}%%` block, it overrides this behavior, and typically results in a diagram
+that is completely unreadable in dark mode.  Unless you are willing to do some serious
+customization to enhance your theme to work in both modes, do not specify a theme in the
+`%%{init}%%` block.
 
-Be sure to test your custom colors with Windows High Contrast mode and a dark theme or dark mode.
+Mermaid also gives you the ability to customize themes in the `%%{init}%%` block using the
+`themeVariables` setting.  You can use these to enhance Github's themes without losing the
+automatic dark mode behavior.  Just be sure to test your custom colors with Windows High Contrast mode and a dark theme or dark mode.
 
 ### Iframe
 
