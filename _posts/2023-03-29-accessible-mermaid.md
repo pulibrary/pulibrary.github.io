@@ -5,7 +5,7 @@ layout: default
 ---
 
 ## Accessible Mermaid charts in Github Markdown
-**by Christina Chortaria, Regine Heberlein, and Jane Sandberg**
+**by Christina Chortaria, Isha Sinha, Regine Heberlein, and Jane Sandberg**
 
 After we saw [Github's announcement about including Mermaid diagrams in markdown
 files](https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/), we started using them extensively!
