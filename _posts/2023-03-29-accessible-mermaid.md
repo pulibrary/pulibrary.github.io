@@ -23,7 +23,7 @@ the following pieces, [your team may not be ready to use this integration](https
 Every mermaid chart in github markdown should have the following:
 
 * An accessible name, provided by a `title` in the front matter or some other way.
-* A detailed text description, either outside the chart, or within it and identified by the `accDescription` keyword.
+* A detailed text description, either outside the chart, or within it and identified by the `accDescr` keyword.
 * No `theme` specified in the `%%{init}%%` block (otherwise, the chart may be unreadable in dark mode).
 * If `themeVariables` are specified in the `%%{init}%%` block, ensure the results have sufficient contrast when dark mode is turned off or on.
 * If you include multiple mermaid charts in the same page, confirm that they are integrated
@@ -79,7 +79,7 @@ simply add it in the markdown itself, outside the memaid chart -- this way, all 
 
 If you don't want the description to display
 on screen, you can have mermaid include it in
-a [`<desc>` element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/desc) within the SVG by using the `accDescription` keyword.
+a [`<desc>` element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/desc) within the SVG by using the `accDescr` keyword.
 
 ### Color themes
 
