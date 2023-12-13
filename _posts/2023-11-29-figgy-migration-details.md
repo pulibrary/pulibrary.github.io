@@ -15,16 +15,64 @@ Before the migration really began, we set up logical replication. This recreated
 
 To set up logical replication, we started with the [AWS Database Migration Guide](https://docs.aws.amazon.com/dms/latest/sbs/chap-manageddatabases.postgresql-rds-postgresql-full-load-publisher.html), then expanded and adapted the steps to our local environment.
 
-The basic steps are:
-- Ensure the source system (the publisher) can accept requests from the target system (the subscriber): edit the pg_hba.conf file on the source system (for us it was our old PostgreSQL 10 machine).
-- Make the publisher keep detailed "write ahead logs" (WALs) to support logical replication.
-- Create a publication for all tables on the publisher. 
-- Create an empty database on the subscriber (for us it was our new PostgreSQL 15 machine) and initialize it with the correct database schema.
-- create a subscription on the new PostgreSQL 15 database so it will listen for updates from the PostgreSQL 10 database
-- wait for full replication to happen - you can validate that replication is complete by generating row counts in both databases and comparing those numbers
+Here's how we did it:
 
-Here's what that looks like in Ansible:
+First set up the publisher.
+- Ensure the source system (the publisher) can accept requests from the target system (the subscriber): edit the pg_hba.conf file on the source system (for us it was our old PostgreSQL 10 machine):
+``` /etc/postgresql/<version>/main/pg_hba.conf
+host    all             all             <IP_of_subscriber/32>       md5
+```
+- Make the publisher keep detailed "write ahead logs" (WALs) to support logical replication:
+``` /etc/postgresql/<version>/main/postgresql.conf
+wal_level = 'logical'
+max_replication_slots = 10
+max_wal_senders = 10
+```
+- Restart postgresql on the publisher to load the config changes you've made:
+``` command line
+sudo systemctl restart postgresql
+```
+- Log into your old PostgreSQL database and create a publication for all tables on the publisher:
+``` psql CLI
+CREATE PUBLICATION <project_name>_publication FOR ALL TABLES;
+```
 
+Next, set up the subscriber (for us it was our new PostgreSQL 15 machine).
+- Get the schema from the publisher and save a copy on the subscriber:
+``` command line
+pg_dump --schema-only -d <database_name> -h <publisher_IP> -U <postgres_admin_user> -f /tmp/<database_name>-schema.sql --no-owner'
+```
+- Create the database user(s) you need.
+``` psql CLI
+CREATE USER <database_user_name> WITH PASSWORD '<password>';
+```
+- Create an empty database.
+``` psql CLI
+CREATE DATABASE <database_name> OWNER <database_user_name>;
+```
+- Load the sql schema into your new, empty database on the subscriber:
+``` command line
+psql -d <database_name> -U <postgres_admin_user> -f /tmp/<database_name>-schema.sql
+```
+- Create a subscription on the new PostgreSQL 15 database so it will listen for updates from the PostgreSQL 10 database:
+``` psql CLI
+CREATE SUBSCRIPTION <project_name>_subscription
+CONNECTION 'host=<publisher_IP> port=5432 dbname=<database_name> user=<postgres_admin_user> password=<postgres_admin_password>' PUBLICATION <project_name>_publication WITH copy_data=true;
+```
+Once everything is set up, wait for full replication to happen. You can validate that replication is complete by generating row counts in both databases and comparing those numbers:
+``` psql CLI
+WITH tbl AS
+  (SELECT table_schema,
+          TABLE_NAME
+   FROM information_schema.tables
+   WHERE TABLE_NAME not like 'pg_%'
+     AND table_schema in ('public'))
+SELECT table_schema,
+       TABLE_NAME,
+       (xpath('/row/c/text()', query_to_xml(format('select count(*) as c from %I.%I', table_schema, TABLE_NAME), FALSE, TRUE, '')))[1]::text::int AS rows_n
+FROM tbl
+ORDER BY rows_n DESC;
+```
 
 Once replication was complete, we wanted to be sure our upgraded database had resilience built in, so we set up a warm standby in addition to our usual backup process.
 
