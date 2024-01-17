@@ -78,11 +78,12 @@ Once replication was complete, we wanted to be sure our upgraded database had re
 
 ### How to Migrate the Application
 
-We created a detailed [runbook](https://github.com/pulibrary/figgy/issues/5903) for the application migration. We didn't just create the runbook, we went over it multiple times. Each time, we thought of additional steps or came up with verification checks we could run. We probably spent five times as much time on reviewing the runbook as we did on actually migrating the application.
+You will want to modify the process below to suit your local environment. Make each step specific so you can copy and paste.
+
 
 Here's how we did it:
 
-- Select an object to use for testing. Make sure it loads and save the URL.
+- Select a page to use for testing. Make sure it loads and save the URL.
 - Open a terminal to each database server:
     * `ssh user@old-database`
     * `ssh user@new-database`
@@ -108,57 +109,45 @@ ORDER BY rows_n DESC;
 - If they're not exact, wait a minute, try again. If they never become exact, then stop. Otherwise, continue.
 - [Update the sequences](https://wiki.postgresql.org/wiki/Fixing_Sequences) in the new database.
 - Run the following query in the new database's psql terminal.
-TODO: how did we generate this list of tables???
+
 ```sql
- SELECT SETVAL('public.active_storage_attachments_id_seq', COALESCE(MAX(id), 1) ) FROM public.active_storage_attachments;
- SELECT SETVAL('public.active_storage_blobs_id_seq', COALESCE(MAX(id), 1) ) FROM public.active_storage_blobs;
- SELECT SETVAL('public.active_storage_variant_records_id_seq', COALESCE(MAX(id), 1) ) FROM public.active_storage_variant_records;
- SELECT SETVAL('public.auth_tokens_id_seq', COALESCE(MAX(id), 1) ) FROM public.auth_tokens;
- SELECT SETVAL('public.authorization_models_id_seq', COALESCE(MAX(id), 1) ) FROM public.authorization_models;
- SELECT SETVAL('public.bookmarks_id_seq', COALESCE(MAX(id), 1) ) FROM public.bookmarks;
- SELECT SETVAL('public.browse_everything_authorization_models_id_seq', COALESCE(MAX(id), 1) ) FROM public.browse_everything_authorization_models;
- SELECT SETVAL('public.browse_everything_session_models_id_seq', COALESCE(MAX(id), 1) ) FROM public.browse_everything_session_models;
- SELECT SETVAL('public.browse_everything_upload_files_id_seq', COALESCE(MAX(id), 1) ) FROM public.browse_everything_upload_files;
- SELECT SETVAL('public.browse_everything_upload_models_id_seq', COALESCE(MAX(id), 1) ) FROM public.browse_everything_upload_models;
- SELECT SETVAL('public.delayed_jobs_id_seq', COALESCE(MAX(id), 1) ) FROM public.delayed_jobs;
- SELECT SETVAL('public.ocr_requests_id_seq', COALESCE(MAX(id), 1) ) FROM public.ocr_requests;
- SELECT SETVAL('public.roles_id_seq', COALESCE(MAX(id), 1) ) FROM public.roles;
- SELECT SETVAL('public.searches_id_seq', COALESCE(MAX(id), 1) ) FROM public.searches;
- SELECT SETVAL('public.session_models_id_seq', COALESCE(MAX(id), 1) ) FROM public.session_models;
- SELECT SETVAL('public.upload_files_id_seq', COALESCE(MAX(id), 1) ) FROM public.upload_files;
- SELECT SETVAL('public.upload_models_id_seq', COALESCE(MAX(id), 1) ) FROM public.upload_models;
- SELECT SETVAL('public.users_id_seq', COALESCE(MAX(id), 1) ) FROM public.users;
+SELECT 
+    'SELECT SETVAL(' ||
+       quote_literal(quote_ident(sequence_namespace.nspname) || '.' || quote_ident(class_sequence.relname)) ||
+       ', COALESCE(MAX(' ||quote_ident(pg_attribute.attname)|| '), 1) ) FROM ' ||
+       quote_ident(table_namespace.nspname)|| '.'||quote_ident(class_table.relname)|| ';'
+FROM pg_depend 
+    INNER JOIN pg_class AS class_sequence
+        ON class_sequence.oid = pg_depend.objid 
+            AND class_sequence.relkind = 'S'
+    INNER JOIN pg_class AS class_table
+        ON class_table.oid = pg_depend.refobjid
+    INNER JOIN pg_attribute 
+        ON pg_attribute.attrelid = class_table.oid
+            AND pg_depend.refobjsubid = pg_attribute.attnum
+    INNER JOIN pg_namespace as table_namespace
+        ON table_namespace.oid = class_table.relnamespace
+    INNER JOIN pg_namespace AS sequence_namespace
+        ON sequence_namespace.oid = class_sequence.relnamespace
+ORDER BY sequence_namespace.nspname, class_sequence.relname;
 ```
+- this will output a new query which you should copy and paste and run.
+
 - Update the application configuration to point to the new database.
 - Restart your web server and any workers.
-- Make sure your test object loads.
+- Make sure your test page loads.
 - We have multiple servers in a load-balanced setup, so we did those three steps multiple times. We removed half of our servers from the load balancer, updated them, reinstated them, removed the other half from the load balancer, restarted the web servers and workers, then checked that our test object still loaded before repeating those steps on our other servers. This gave us a way to retreat if we needed to. It also kept the system available for read operations during the upgrade.
 - Take the application out of read-only mode, or start it up again. Do not advertise this yet.
-- Create a new object, make sure that works.
 - Try any other operations your application offers, make sure they work.
 - Check your monitoring systems, make sure they don't show more errors than normal.
 - If good, throw a party.
 - If bad, put it back in read only mode, check the time, and either resolve or undo everything.
 - Turn off logical replication by deleting the subscription on your new database (`DROP SUBSCRIPTION <project_name>_subscription;`)
-- Set up and enable backup, verify.
+- Set up and enable your preferred backup strategy for your new database, verify.
 - Notify your users that the system is available again. We posted on Slack: `We've finished maintenance on Figgy, feel free to do whatever work you need to with the load balancer.`
 
 The migration itself took one hour and 13 minutes - much better than our original estimate of two days. Some of this time was spent looking for connections in the old database and reassuring ourselves that the application was really using the new database. All our earlier work paid off hugely.
 
 We got longer-term benefits from the work we put in as well. Now we can spin up a new database cluster with confidence when we need one. We can use Ansible to run SQL commands. And we can tune the PostgreSQL cluster for our Figgy application, optimizing memory usage for our largest database.
 
-### How to Set Up Streaming Replication (aka Warm Standbys)
-
-We updated our existing [Ansible playbooks]() to set up standbys using streaming replication for the final cluster. Here's how those playbooks work:
-
-- To make a replica, you need two identical machines - same resources, same version of PostgreSQL - one of which is already active and the other of which has never been turned on. Configure your current active machine as a leader. Then sync the data directory exactly before bringing up the second machine, which you configure as a follower.
-- There’s a replication.conf file that goes onto all machines, but there’s a difference in the last line for the standby machine.
-- The leader tasks run first. They make a special replication user, which does not have database access but can read write-ahead logs. It also ensures all followers are in the pg_hba.conf file and have correct permissions to replicate.
-- Then the follower tasks run. They ensure the whole cluster is in the follower's pg_hba.conf so you can promote it if/when you need to. The follower also needs a standby.signal file. If it doesn't exist, the tasks ensure that the postgres service is stopped, delete its data directory, rsync the data directory from the leader via the postgres port (this is what pg_basebackup does), then add a standby.signal file (this is specific to postgres 15 -- this is a mechanism that has changed a lot), and finally start the postgres service.
-- The leader and follower tasks only run on pg machines that are configured with postgres_cluster values, so you can have other clusters configured differently.
-
-### What's Next?
-
-Now that we have completed our big migration, we are looking for ways to make our migration runbook more efficient. We did put the application in read-only mode, which might not be necessary next time if we use [PGbouncer](https://www.pgbouncer.org/).
-
-We are also looking to expand our understanding of PostgreSQL for really big databases. We want to know if we could get better performance, we want to be able to replicate production data into staging, we want to do isolated backup restoration (one table, one row), and we want reliability.
+In our next post we will discuss how to set up a warm standby with streaming replication.
