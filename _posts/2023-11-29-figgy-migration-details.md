@@ -4,7 +4,7 @@ title: Figgy Migration Details
 layout: default
 ---
 
-## Setting up Logical Replication and Warm Standbys for PostgreSQL 15
+## Migrating to PostgreSQL 15 with Logical Replication 
 **by Alicia Cozine, Anna Headley, Francis Kayiwa, and Trey Pendragon**
 
 In our [previous post](2023-11-08-migrating-postgres-via-replication.md), we described how we decided to migrate a very large database using logical replication. In this post we will detail the steps we followed to make it happen.
@@ -81,7 +81,7 @@ Once replication was complete, we wanted to be sure our upgraded database had re
 You will want to modify the process below to suit your local environment. Make each step specific so you can copy and paste.
 
 
-Here's how we did it:
+This is how we did it:
 
 - Select a page to use for testing. Make sure it loads and save the URL.
 - Open a terminal to each database server:
@@ -108,7 +108,7 @@ ORDER BY rows_n DESC;
 - Check row counts for all tables between both servers again (belt and suspenders, folks).
 - If they're not exact, wait a minute, try again. If they never become exact, then stop. Otherwise, continue.
 - [Update the sequences](https://wiki.postgresql.org/wiki/Fixing_Sequences) in the new database.
-- Run the following query in the new database's psql terminal.
+- Run the following query in the new database's psql terminal:
 
 ```sql
 SELECT 
@@ -131,7 +131,7 @@ FROM pg_depend
         ON sequence_namespace.oid = class_sequence.relnamespace
 ORDER BY sequence_namespace.nspname, class_sequence.relname;
 ```
-- this will output a new query which you should copy and paste and run.
+- This will output a new query which you should copy and paste and run.
 
 - Update the application configuration to point to the new database.
 - Restart your web server and any workers.
