@@ -138,8 +138,8 @@ ORDER BY sequence_namespace.nspname, class_sequence.relname;
 - If good, throw a party.
 - If bad, put it back in read only mode, check the time, and either resolve or undo everything.
 - Turn off logical replication by deleting the subscription on your new database (`DROP SUBSCRIPTION <project_name>_subscription;`)
-- Set up and enable your preferred backup strategy for your new database, verify.
 - Notify your users that the system is available again. We posted on Slack: `We've finished maintenance on Figgy, feel free to do whatever work you need to with the load balancer.`
+- Set up and enable your preferred backup strategy for your new database, verify.
 
 The migration itself took one hour and 13 minutes - much better than our original estimate of two days. Some of this time was spent looking for connections in the old database and reassuring ourselves that the application was really using the new database. All our earlier work paid off hugely.
 
