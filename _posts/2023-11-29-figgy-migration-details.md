@@ -1,6 +1,6 @@
 ---
 date: 2023-11-29 13:25:00 -0400
-title: Figgy Migration Details
+title: PostgreSQL Logical Replication
 layout: default
 ---
 
@@ -18,49 +18,46 @@ To set up logical replication, we started with the [AWS Database Migration Guide
 Here's how we did it:
 
 First set up the publisher.
-- Ensure the source system (the publisher) can accept requests from the target system (the subscriber): edit the pg_hba.conf file on the source system (for us it was our old PostgreSQL 10 machine):
-``` /etc/postgresql/<version>/main/pg_hba.conf
+- Ensure the source system (the publisher) can accept requests from the target system (the subscriber): edit the pg_hba.conf file on the source system (for us it was our old PostgreSQL 10 machine). Edit '/etc/postgresql/<version>/main/pg_hba.conf':
+```/etc/postgresql/<version>/main/pg_hba.conf
 host    all             all             <IP_of_subscriber/32>       md5
 ```
-- Make the publisher keep detailed "write ahead logs" (WALs) to support logical replication:
-``` /etc/postgresql/<version>/main/postgresql.conf
+- Edit `/etc/postgresql/<version>/main/postgresql.conf` to make the publisher keep detailed "write ahead logs" (WALs) to support logical replication:
+```/etc/postgresql/<version>/main/postgresql.conf
 wal_level = 'logical'
 max_replication_slots = 10
 max_wal_senders = 10
 ```
-- Restart postgresql on the publisher to load the config changes you've made:
-``` command line
+- Restart postgresql on the publisher to load the config changes you've made. On the command line:
+```command line
 sudo systemctl restart postgresql
 ```
-- Log into your old PostgreSQL database and create a publication for all tables on the publisher:
-``` psql CLI
+- Log into your old PostgreSQL database via the psql utility and create a publication for all tables on the publisher:
+```psql CLI
 CREATE PUBLICATION <project_name>_publication FOR ALL TABLES;
 ```
 
 Next, set up the subscriber (for us it was our new PostgreSQL 15 machine).
-- Get the schema from the publisher and save a copy on the subscriber:
-``` command line
+- Get the schema from the publisher and save a copy on the subscriber. On the command line:
+```command line
 pg_dump --schema-only -d <database_name> -h <publisher_IP> -U <postgres_admin_user> -f /tmp/<database_name>-schema.sql --no-owner'
 ```
-- Create the database user(s) you need.
-``` psql CLI
+- Create the database user(s) you need and create an empty database using the psql utility.
+```psql CLI
 CREATE USER <database_user_name> WITH PASSWORD '<password>';
-```
-- Create an empty database.
-``` psql CLI
 CREATE DATABASE <database_name> OWNER <database_user_name>;
 ```
-- Load the sql schema into your new, empty database on the subscriber:
-``` command line
+- Load the sql schema into your new, empty database on the subscriber. On the command line:
+```command line
 psql -d <database_name> -U <postgres_admin_user> -f /tmp/<database_name>-schema.sql
 ```
-- Create a subscription on the new PostgreSQL 15 database so it will listen for updates from the PostgreSQL 10 database:
-``` psql CLI
+- Create a subscription using the psql utility on the new PostgreSQL 15 database so it will listen for updates from the PostgreSQL 10 database:
+```psql CLI
 CREATE SUBSCRIPTION <project_name>_subscription
 CONNECTION 'host=<publisher_IP> port=5432 dbname=<database_name> user=<postgres_admin_user> password=<postgres_admin_password>' PUBLICATION <project_name>_publication WITH copy_data=true;
 ```
-Once everything is set up, wait for full replication to happen. You can validate that replication is complete by generating row counts in both databases and comparing those numbers:
-``` psql CLI
+Once everything is set up, wait for full replication to happen. You can validate that replication is complete by generating row counts using psql in both databases and comparing those numbers:
+```psql CLI
 WITH tbl AS
   (SELECT table_schema,
           TABLE_NAME
@@ -80,7 +77,6 @@ Once replication was complete, we wanted to be sure our upgraded database had re
 
 You will want to modify the process below to suit your local environment. Make each step specific so you can copy and paste.
 
-
 This is how we did it:
 
 - Select a page to use for testing. Make sure it loads and save the URL.
@@ -88,7 +84,7 @@ This is how we did it:
     * `ssh user@old-database`
     * `ssh user@new-database`
 - Open a SQL terminal connected to `<database_name>` on both servers: `sudo -u postgres psql -d <database_name>`
-- Check row counts for all tables between both servers:
+- Check row counts for all tables between both servers using the psql utility:
 ```sql
 WITH tbl AS
   (SELECT table_schema,
