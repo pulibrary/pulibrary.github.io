@@ -107,8 +107,7 @@ ORDER BY rows_n DESC;
 - Set your application to read-only mode (or shut it down), so nobody can add new records while you migrate.
 - Check row counts for all tables between both servers again (belt and suspenders, folks).
 - If they're not exact, wait a minute, try again. If they never become exact, then stop. Otherwise, continue.
-- [Update the sequences](https://wiki.postgresql.org/wiki/Fixing_Sequences) in the new database.
-- Run the following query in the new database's psql terminal:
+- Run the following query (which we pulled from the [postgresl.org wiki](https://wiki.postgresql.org/wiki/Fixing_Sequences)) in the new database's psql terminal to update the sequences:
 
 ```sql
 SELECT 
@@ -136,7 +135,7 @@ ORDER BY sequence_namespace.nspname, class_sequence.relname;
 - Update the application configuration to point to the new database.
 - Restart your web server and any workers.
 - Make sure your test page loads.
-- We have multiple servers in a load-balanced setup, so we did those three steps multiple times. We removed half of our servers from the load balancer, updated them, reinstated them, removed the other half from the load balancer, restarted the web servers and workers, then checked that our test object still loaded before repeating those steps on our other servers. This gave us a way to retreat if we needed to. It also kept the system available for read operations during the upgrade.
+- We have multiple servers in a load-balanced setup, so we updated the application server configuration in two batches. We removed half of our servers from the load balancer, updated them, reinstated them, removed the other half from the load balancer, restarted the web servers and workers, then checked that our test object still loaded before repeating those steps on our other servers. This gave us a way to retreat if we needed to. It also kept the system available for read operations during the upgrade.
 - Take the application out of read-only mode, or start it up again. Do not advertise this yet.
 - Try any other operations your application offers, make sure they work.
 - Check your monitoring systems, make sure they don't show more errors than normal.
