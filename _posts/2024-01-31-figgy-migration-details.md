@@ -7,7 +7,7 @@ layout: default
 ## Migrating to PostgreSQL 15 with Logical Replication 
 **by Alicia Cozine, Anna Headley, Francis Kayiwa, and Trey Pendragon**
 
-In our [previous post](2023-11-08-migrating-postgres-via-replication.md), we described how we decided to migrate a very large database using logical replication. In this post we will detail the steps we followed to make it happen.
+In our [previous post](2023-11-08-migrating-postgres-via-replication), we described how we decided to migrate a very large database using logical replication. In this post we will detail the steps we followed to make it happen.
 
 ### How to Set Up Logical Replication
 
@@ -22,6 +22,7 @@ First set up the publisher.
 ```/etc/postgresql/<version>/main/pg_hba.conf
 host    all             all             <IP_of_subscriber/32>       md5
 ```
+<!--more-->
 - Edit `/etc/postgresql/<version>/main/postgresql.conf` to make the publisher keep detailed "write ahead logs" (WALs) to support logical replication:
 ```/etc/postgresql/<version>/main/postgresql.conf
 wal_level = 'logical'
@@ -145,4 +146,4 @@ The migration itself took one hour and 13 minutes - much better than our origina
 
 We got longer-term benefits from the work we put in as well. Now we can spin up a new database cluster with confidence when we need one. We can use Ansible to run SQL commands. And we can tune the PostgreSQL cluster for our Figgy application, optimizing memory usage for our largest database.
 
-In our next post we will discuss how to set up a warm standby with streaming replication.
+In our [next post](2024-02-07-warm_standby) we discuss how to set up a warm standby with streaming replication.

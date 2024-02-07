@@ -19,6 +19,8 @@ We wanted to approach the migration in a cross-team, low-stress way. We chartere
 
 First we started to build a copy of our production infrastructure on Postgres 10, so that we could carefully try out different migration strategies to move fully from 10 to 15. This turned out to be difficult. All the versions were so old - we would have needed EOL Ubuntu servers to build the EOL Postgres versions, which seemed like wasted effort.
 
+<!--more-->
+
 The next thing we did was try a dump and restore to see how long it took. This is how we had successfully migrated all our other databases off that old physical server. For Figgy, though, the fastest possible dump took 45 minutes and restoring it took 15 hours. Reindexing would have taken another 18 hours or more. If we had started the process on a Tuesday, we could have started the reindex on Wednesday and Figgy could have been back up on Thursday. But that would still be 2 days with the site in read-only mode. We abandoned this approach before we even reindexed. 
 
 We didn't want the migration to involve that much downtime and disruption. We also have and support a culture of not working after hours or on the weekend.
@@ -58,4 +60,4 @@ We migrated a 200GB database in under 2 hours, ask us how!
 
 Almost everyone on the internet recommends the dump-and-restore method of migrating or recreating postgresql databases. But it's not always the best method. For a really large database, logical replication works with less downtime by doing most of the work while your old database is still in use.
 
-In our next post we will describe the detailed steps we took to set up logical replication, migrate our database, and set up warm standbys for the new database servers.
+In our [next post](2024-01-31-figgy-migration-details) we describe the detailed steps we took to set up logical replication, migrate our database, and set up warm standbys for the new database servers.
