@@ -3,15 +3,18 @@ title: Princeton University Library IT
 layout: default
 ---
 
-<h3>Princeton University Library IT</h3>
+<lux-heading level="h1" hidden="true">Recent posts</lux-heading>
 
 <ul class="post-list">
   {% for post in site.posts %}
     <li>
-      <p class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</p>
-      {{ post.excerpt }}
-      <p class="post-meta"><a class="post-link" href="{{ post.url | prepend: site.baseurl }}">More...</a></p>
-      <br/>
+      <lux-card size="full-width">
+        <lux-card-content>
+          <p class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</p>
+          {{ post.excerpt }}
+          <p class="post-meta"><lux-hyperlink href="{{ post.url | prepend: site.baseurl }}" variation="button solid">More about {{post.title}}...</lux-hyperlink></p>
+        </lux-card-content>
+      </lux-card>
     </li>
   {% endfor %}
 </ul>
