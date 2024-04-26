@@ -34,3 +34,22 @@ The next step is to look at the data you get back. The debug module is your frie
 
 #### Home in the variable you want
 
+## Examples
+
+If you start with this data:
+
+```vars.yml
+create a vars file with sample data here
+```
+
+and run this playbook:
+
+```playbook.yml
+create a playbook with sample tasks (including fact gathering)
+```
+
+you get this output:
+
+```bash
+paste output here
+```
