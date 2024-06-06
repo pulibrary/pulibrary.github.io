@@ -38,7 +38,31 @@ The next step is to look at the data you get back. The debug module is your frie
 
 If you start with this data:
 
-```vars.yml
+```yaml
+- name: Gather MAC address of VM to replace
+  community.vmware.vmware_vm_info:
+    hostname: '{{ vcenter_hostname }}'
+    username: '{{ vcenter_username }}'
+    password: '{{ vcenter_password }}'
+    validate_certs: false
+    vm_name: "{{ vm_to_replace }}"
+  register: vm_info
+
+- name: Print out deleted VM information
+  ansible.builtin.debug:
+    msg: You will be deleting {{ vm_info }}
+
+- name: Set powerstate of a virtual machine to poweroff by using UUID
+  community.vmware.vmware_guest:
+    hostname: "{{ vcenter_hostname }}"
+    username: "{{ vcenter_username }}"
+    password: "{{ vcenter_password }}"
+    validate_certs: false
+    datacenter: "{{ vcenter_datacenter }}"
+    cluster: "{{ vcenter_cluster }}"
+    uuid: "{{ vm_info.uuid }}"
+    state: poweredoff
+```
 create a vars file with sample data here
 ```
 
@@ -50,6 +74,13 @@ create a playbook with sample tasks (including fact gathering)
 
 you get this output:
 
-```bash
+```json
+"msg": "You will be deleting {'changed': False, 'virtual_machines': [{'guest_name': 'sandbox-tw8766', 'guest_fullname': 'Ubuntu Linux (64-bit)', 'power_state': 'poweredOn', 'ip_address': '172.20.80.18', 'mac_address': ['00:50:56:ac:7d:7e'], 'uuid': '422cb961-2663-1edf-fb5b-694301d21623', 'instance_uuid': '502cdbb6-b22e-57cf-0396-3a57d433e439', 'vm_network': {'00:50:56:ac:7d:7e': {'ipv4': ['172.20.80.18/22'], 'ipv6': ['fe80::250:56ff:feac:7d7e/64']}}, 'esxi_hostname': 'lib-vmserv001b-dev.princeton.edu', 'datacenter': 'Library-Dev', 'cluster': 'VMCluster', 'resource_pool': None, 'attributes': {}, 'tags': [], 'folder': '/Library-Dev/vm/Discovered virtual machine', 'moid': 'vm-3596', 'datastore_url': [{'name': 'VMSANVOL005_05TB_3Par', 'url': '/vmfs/volumes/5ddd70a2-87f572d0-7b51-98f2b3f26eb6'}], 'allocated': {}}], 'failed': False}",
+  "_ansible_verbose_always": true,
+  "_ansible_no_log": null,
+  "changed": false
+
+
+```
 paste output here
 ```
