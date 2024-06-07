@@ -36,7 +36,7 @@ The next step is to look at the data you get back. The debug module is your frie
 
 ## Examples
 
-If you start with this data:
+We started with these tasks:
 
 ```yaml
 - name: Gather MAC address of VM to replace
@@ -63,24 +63,21 @@ If you start with this data:
     uuid: "{{ vm_info.uuid }}"
     state: poweredoff
 ```
-create a vars file with sample data here
-```
 
-and run this playbook:
-
-```playbook.yml
-create a playbook with sample tasks (including fact gathering)
-```
-
-you get this output:
+the debug task gave us this output:
 
 ```json
 "msg": "You will be deleting {'changed': False, 'virtual_machines': [{'guest_name': 'sandbox-tw8766', 'guest_fullname': 'Ubuntu Linux (64-bit)', 'power_state': 'poweredOn', 'ip_address': '172.20.80.18', 'mac_address': ['00:50:56:ac:7d:7e'], 'uuid': '422cb961-2663-1edf-fb5b-694301d21623', 'instance_uuid': '502cdbb6-b22e-57cf-0396-3a57d433e439', 'vm_network': {'00:50:56:ac:7d:7e': {'ipv4': ['172.20.80.18/22'], 'ipv6': ['fe80::250:56ff:feac:7d7e/64']}}, 'esxi_hostname': 'lib-vmserv001b-dev.princeton.edu', 'datacenter': 'Library-Dev', 'cluster': 'VMCluster', 'resource_pool': None, 'attributes': {}, 'tags': [], 'folder': '/Library-Dev/vm/Discovered virtual machine', 'moid': 'vm-3596', 'datastore_url': [{'name': 'VMSANVOL005_05TB_3Par', 'url': '/vmfs/volumes/5ddd70a2-87f572d0-7b51-98f2b3f26eb6'}], 'allocated': {}}], 'failed': False}",
   "_ansible_verbose_always": true,
   "_ansible_no_log": null,
   "changed": false
-
-
 ```
-paste output here
+
+and the next task failed with this error:
+
+```yaml
+"msg": "The task includes an option with an undefined variable. The error was: 'dict object' has no attribute 'uuid'. 'dict object' has no attribute 'uuid'\n\nThe error appears to be in '/runner/project/playbooks/utils/replace_vm_host.yml': line 27, column 7, but may\nbe elsewhere in the file depending on the exact syntax problem.\n\nThe offending line appears to be:\n\n\n    - name: Set powerstate of a virtual machine to poweroff by using UUID\n      ^ here\n",
+}
 ```
+So we knew the formulation of the variable `{{ vm_info.uuid }}` is wrong . . . but what is the correct formulation?
+
