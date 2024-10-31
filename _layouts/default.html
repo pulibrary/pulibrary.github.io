@@ -4,13 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>{{ site.title | default: site.github.repository_name }} by {{ site.github.owner_name }}</title>
-    <link rel="stylesheet" href="https://unpkg.com/lux-design-system@5.6.1/dist/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/lux-design-system@5.9.0/dist/style.css">
     <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
     <script type="importmap">
       {
         "imports": {
           "vue": "https://unpkg.com/vue@3.2.47/dist/vue.esm-browser.prod.js",
-          "lux-design-system": "https://unpkg.com/lux-design-system@5.6.1/dist/lux-styleguidist.mjs"
+          "lux-design-system": "https://unpkg.com/lux-design-system@5.9.0/dist/lux-styleguidist.mjs"
         }
       }
     </script>
@@ -28,6 +28,6 @@
         {{ content }}
       </lux-wrapper>
 
-      <lux-library-footer></lux-library-footer>
+      <lux-university-footer></lux-university-footer>
   </body>
 </html>
