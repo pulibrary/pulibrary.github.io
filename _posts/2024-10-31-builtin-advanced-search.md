@@ -5,7 +5,7 @@ layout: default
 ---
 
 ## Migrating to Blacklight's Built-in Advanced Search
-**by Regine Heberlein, Max Kadel,  Ryan Laddusaw, Kevin Reiss, and Jane Sandberg**
+**by Christina Chortaria, Regine Heberlein, Max Kadel, Ryan Laddusaw, Kevin Reiss, and Jane Sandberg**
 
 As part of migrating our catalog from Blacklight 7 to
 Blacklight 8, we made the decision to move away from
