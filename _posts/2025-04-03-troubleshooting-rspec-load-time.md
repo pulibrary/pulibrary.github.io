@@ -7,8 +7,7 @@ layout: default
 ## Troubleshooting RSpec load time
 **by Jane Sandberg**
 
-In one of our applications, we found that tests were taking quite some time to load.  For example,
-when running a relatively quick spec file, we got output like this:
+In one of our applications, we found that tests were taking quite some time to load.  For example, when running a relatively quick spec file, we got output like this:
 
 ```
 bundle exec rspec spec/models/user_spec.rb
