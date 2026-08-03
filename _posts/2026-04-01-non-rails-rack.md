@@ -1,5 +1,5 @@
 ---
-date: 2026-08-03 13:25:00 -0400
+date: 2026-08-03 11:25:00 -0400
 title: Migrating from Rails to Rack
 layout: default
 ---
