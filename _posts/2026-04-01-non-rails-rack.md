@@ -53,7 +53,7 @@ selective about which of Rails' built-in initializers are run.
 
 Zeitwerk is a nice autoloader.  However, we can't use our own autoloader and the Rails
 autoloaders at the same time.  The answer is the same as the routing: replace
-`Rails.application.initialize!` with a more selctive initialization process that does
+`Rails.application.initialize!` with a more selective initialization process that does
 not create Rails autoloaders.
 
 ### Successes
