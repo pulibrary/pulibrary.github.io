@@ -17,7 +17,7 @@ remove and replace the Rails pieces; no changes were needed to our deployment
 process.  Deepening our understanding of Rack would also help
 us in our work with any Rack-based application, whether it is Rails, Hanami, or
 just Rack.
-
+<!--more-->
 Rack is quite simple and does not provide every feature that Rails does, so we
 supplemented Rack with:
 
