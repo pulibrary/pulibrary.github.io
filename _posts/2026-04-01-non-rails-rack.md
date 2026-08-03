@@ -1,5 +1,5 @@
 ---
-date: 2026-04-01 13:25:00 -0400
+date: 2026-08-03 13:25:00 -0400
 title: Migrating from Rails to Rack
 layout: default
 ---
@@ -104,7 +104,7 @@ Here are a few key concepts that we now use in our application:
 
 ### How has it been going?
 
-It has been 4 months since we finished the migration, and it has been
+It has been 8 months since we finished the migration, and it has been
 working great so far!  Please feel free to try out the
 [Allsearch application](https://allsearch.princeton.edu/) or
 [see the project Github](https://github.com/pulibrary/allsearch_api).
